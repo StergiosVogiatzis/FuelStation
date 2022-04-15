@@ -1,4 +1,7 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@inject ILocalStorageService LocalStorage
+@inject AuthenticationStateProvider AuthStateProvider
+@attribute [Authorize(Roles = "staff, cashier, manager")]
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">FuelStation.Blazor</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -36,15 +39,24 @@
         </div>
         <div class="dropdown-divider"/>
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="Login">
-                <span class="oi oi-account-login" aria-hidden="true"></span> Login
-            </NavLink>
+            <AuthorizeView>
+                <NotAuthorized>
+                    <NavLink class="nav-link" href="Login">
+                        <span class="oi oi-account-login" aria-hidden="true"></span> Login
+                    </NavLink>
+                </NotAuthorized>
+                <Authorized>
+                    <a class="nav-link" @onlick="Logout" style="cusrsor: pointer"/>
+                        <span class="oi oi-account-logout" aria-hidden="true"></span> Logout
+                </Authorized>
+            </AuthorizeView>
         </div>
     </nav>
 
 </div>
 
 @code {
+    
     private bool collapseNavMenu = true;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
@@ -52,5 +64,9 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+    private async void Logout(){
+        await LocalStorage.RemoveItemAsync("username");
+        await AuthStateProvider.GetAuthenticationStateAsync();
     }
 }

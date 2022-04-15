@@ -1,5 +1,8 @@
 ﻿@page "/login"
 @using FuelStation.Blazor.Shared
+@inject ILocalStorageService LocalStorage
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthStateProvider
 
 <h3>Login</h3>
 
@@ -10,14 +13,19 @@
 	</div>
 	<div class="form-group">
 		<label for="password">Password</label>
-		<InputText id="password" @bind-Value="user.Password" class="form-control"/>
+		<InputText id="password" @bind-Value="user.Password" type="password" class="form-control"/>
 	</div>
 	<button type="submit" class="btn btn-primary mt-2">Login</button>
 </EditForm>
 @code {
 	private User user=new();
-	private void HandleLogin()
+	private async void HandleLogin()
 	{
 		Console.WriteLine("Log in!");
+		await LocalStorage.SetItemAsync<string>("username", user.Username);
+		await AuthStateProvider.GetAuthenticationStateAsync();
+		NavigationManager.NavigateTo("");
+		
+		
 	}
 }
