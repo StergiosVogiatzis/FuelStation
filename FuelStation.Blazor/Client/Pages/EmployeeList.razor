@@ -1,0 +1,86 @@
+﻿@page "/employeeList"
+@using FuelStation.Blazor.Shared
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+
+<h3>Employees</h3>
+
+<button class="btn btn-primary" @onclick="AddEmployee">Add Employee</button>
+@if (isLoading)
+{
+    <p>Loading ...</p>
+}else{
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Employee Hire Date</th>
+            <th>Employee End Date</th>
+            <th>Salary Per Month</th>
+            <th>Employee Type</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        
+        @foreach(var employee in employeeList)
+        {
+            <tr>
+                <td>@employee.Name</td>
+                <td>@employee.Surname</td>
+                <td>@employee.HireDateStart</td>
+                <td>@employee.HireDateEnd</td>
+                <td>@employee.Sallary</td>
+                <td>@employee.EmployeeType</td>
+                <td>
+                    <button class="btn btn-success" @onclick="() => EditEmployee(employee)">Edit</button>
+                    <button class="btn btn-danger" @onclick="() => DeleteEmployee(employee)">Delete</button>
+                    <button class="btn btn-warning" @onclick="() => FireEmployee(employee)">Fire</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+}
+@code{
+
+    List<EmployeeViewModel> employeeList = new();
+    bool isLoading = true;
+    bool fired = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        await LoadEmployeeFromServer();
+        isLoading = false;
+    }
+
+    private async Task LoadEmployeeFromServer()
+    {
+        employeeList = await httpClient.GetFromJsonAsync<List<EmployeeViewModel>>("employee");
+    }
+    async Task AddEmployee()
+    {
+        navigationManager.NavigateTo("/employeelist/edit");
+    }
+
+    async Task DeleteEmployee(EmployeeViewModel employeeToDelete)
+    {
+        var response = await httpClient.DeleteAsync($"employee/{employeeToDelete.ID}");
+        response.EnsureSuccessStatusCode();
+        await LoadEmployeeFromServer();
+    }
+
+    async Task EditEmployee(EmployeeViewModel employeeToEdit)
+    {
+        navigationManager.NavigateTo($"/employeelist/edit/{employeeToEdit.ID}");
+
+    }
+    async Task FireEmployee(EmployeeViewModel employeeToFire)
+    {
+        HttpResponseMessage response;
+        employeeToFire.HireDateEnd = DateTime.Now;
+        response = await httpClient.PutAsJsonAsync("employee", employeeToFire);
+    }
+}

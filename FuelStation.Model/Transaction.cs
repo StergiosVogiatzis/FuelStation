@@ -15,6 +15,7 @@ namespace FuelStation.Model
         public Customer Customer { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
         public decimal TotalValue { get; set; }
+        public List<TransactionLine> TransactionLines { get; set; }
         public Transaction()
         {
 

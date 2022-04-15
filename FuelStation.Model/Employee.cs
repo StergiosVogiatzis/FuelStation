@@ -14,6 +14,7 @@ namespace FuelStation.Model
         public DateTime HireDateEnd { get; set; }
         public decimal Sallary { get; set; }
         public EmployeeType EmployeeType { get; set; }
+        public List<Transaction> Transactions { get; set; }
         public Employee()
         {
 

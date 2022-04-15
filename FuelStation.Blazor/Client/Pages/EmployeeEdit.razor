@@ -1,0 +1,87 @@
+﻿@page "/employeelist/edit/{Id:guid?}"
+@using FuelStation.Blazor.Shared
+@using FuelStation.Model
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+
+<h3>Employee</h3>
+
+@if (EmployeeItem == null)
+{
+    <p>Loading ...</p>
+}
+else
+{
+    <EditForm Model="@employeeView" OnValidSubmit="@OnSave">
+        <table>
+            <tr>
+                <th> <label class="form-label mt-2">Name</label></th>
+                <input class="form-control mt-2" pattern="[A-Za-z]{1,50}" @bind=EmployeeItem.Name title="The field is required and must contains only characters." required />
+            </tr>
+            <tr>
+                <th> <label class="form-label mt-2">Surname</label></th>
+                <input class="form-control mt-2" @bind=EmployeeItem.Surname pattern="[A-Za-z]{1,50}" title="The field is required and must contains only characters." required/>
+
+            </tr>
+            <tr>
+                <th> <label class="form-label mt-2">Sallary</label></th>
+                <input class="form-control mt-2" @bind=EmployeeItem.Sallary pattern="[0-9]{1,10}" title="The field is required and must contains only digits." required/>
+            </tr>
+            <tr>
+                <th> <label class="form-label mt-2">Hire Date</label></th>
+                <InputDate class="form-control mt-2" @bind-Value=EmployeeItem.HireDateStart format="dd/MM/yyyy" title="The field is required." required/>
+            </tr>
+            <tr>
+                <th><label class="form-label mt-2">Employee Type</label></th>
+                <InputSelect class="form-control mt-2" @bind-Value="employeeView.EmployeeType">
+                                                 @foreach (var type in Enum.GetValues(typeof(EmployeeType))) {
+                                                    <option value="@type">@type</option>
+                                                } </InputSelect>
+            </tr>
+            <tr>
+                <div class="row mt-2">
+                    <div class="col">
+                        <button type="submit" class="btn btn-success" >Save</button>
+                        <button class="btn btn-danger" @onclick="OnCancel">Cancel</button>
+                    </div>
+                </div>
+            </tr>
+        </table>
+ 
+    </EditForm>
+}
+
+@code {
+    [Parameter] public Guid? Id { get; set; }
+    private EmployeeViewModel employeeView = new();
+    EmployeeEditViewModel EmployeeItem { get; set; } = new();
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        EmployeeItem = await httpClient.GetFromJsonAsync<EmployeeEditViewModel>($"employee/{(Id == null ? Guid.Empty : Id)}");
+
+    }
+
+    protected async Task OnSave()
+    {
+        HttpResponseMessage response;
+        if (Id == null || Id == Guid.Empty)
+        {
+            response = await httpClient.PostAsJsonAsync("employee", EmployeeItem);
+        }
+        else
+        {
+            response = await httpClient.PutAsJsonAsync("employee", EmployeeItem);
+        }
+        response.EnsureSuccessStatusCode();
+        navigationManager.NavigateTo("employeelist");
+    }
+
+    protected void OnCancel()
+    {
+        navigationManager.NavigateTo("employeelist");
+    }
+}

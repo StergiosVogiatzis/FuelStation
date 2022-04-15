@@ -1,0 +1,23 @@
+﻿@page "/login"
+@using FuelStation.Blazor.Shared
+
+<h3>Login</h3>
+
+<EditForm Model="user" OnSubmit="HandleLogin">
+	<div class="form-group">
+		<label for="username">Username</label>
+		<InputText id="username" @bind-Value="user.Username" class="form-control"/>
+	</div>
+	<div class="form-group">
+		<label for="password">Password</label>
+		<InputText id="password" @bind-Value="user.Password" class="form-control"/>
+	</div>
+	<button type="submit" class="btn btn-primary mt-2">Login</button>
+</EditForm>
+@code {
+	private User user=new();
+	private void HandleLogin()
+	{
+		Console.WriteLine("Log in!");
+	}
+}

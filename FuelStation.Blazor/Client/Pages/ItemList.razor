@@ -1,0 +1,77 @@
+﻿@page "/itemList"
+@using FuelStation.Blazor.Shared
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+
+<h3>Items</h3>
+
+<button class="btn btn-primary" @onclick="AddItem">Add Item</button>
+@if (isLoading)
+{
+    <p>Loading ...</p>
+}else{
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Code</th>
+            <th>Description</th>
+            <th>Item Type</th>
+            <th>Price</th>
+            <th>Cost</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        
+        @foreach(var item in itemList)
+        {
+            <tr>
+                <td>@item.Code</td>
+                <td>@item.Description</td>
+                <td>@item.ItemType</td>
+                <td>@item.Price</td>
+                <td>@item.Cost</td>
+                <td>
+                    <button class="btn btn-success" @onclick="() => EditItem(item)">Edit</button>
+                    <button class="btn btn-danger" @onclick="() => DeleteItem(item)">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+}
+@code{
+
+    List<ItemViewModel> itemList = new();
+    bool isLoading = true;
+    
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        await LoadItemFromServer();
+        isLoading = false;
+    }
+
+    private async Task LoadItemFromServer()
+    {
+        itemList = await httpClient.GetFromJsonAsync<List<ItemViewModel>>("item");
+    }
+    async Task AddItem()
+    {
+        navigationManager.NavigateTo("/itemlist/edit");
+    }
+
+    async Task DeleteItem(ItemViewModel itemToDelete)
+    {
+        var response = await httpClient.DeleteAsync($"item/{itemToDelete.ID}");
+        response.EnsureSuccessStatusCode();
+        await LoadItemFromServer();
+    }
+
+    async Task EditItem(ItemViewModel itemToEdit)
+    {
+        navigationManager.NavigateTo($"/itemlist/edit/{itemToEdit.ID}");
+
+    }
+}

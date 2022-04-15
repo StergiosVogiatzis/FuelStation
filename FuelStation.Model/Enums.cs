@@ -20,7 +20,7 @@ namespace FuelStation.Model
     }
     public enum PaymentMethod
     {
-        CreditCard,
-        Cash
+        Cash,
+        CreditCard
     }
 }

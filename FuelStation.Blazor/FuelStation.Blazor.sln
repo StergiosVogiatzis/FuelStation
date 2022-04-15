@@ -3,15 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuelStation.Blazor.Server", "Server\FuelStation.Blazor.Server.csproj", "{ACCE904B-5112-4895-A284-A7DFA7378420}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FuelStation.Blazor.Server", "Server\FuelStation.Blazor.Server.csproj", "{ACCE904B-5112-4895-A284-A7DFA7378420}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuelStation.Blazor.Client", "Client\FuelStation.Blazor.Client.csproj", "{D3C4BDF5-E4FB-4AA6-8EE6-6452142040B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FuelStation.Blazor.Client", "Client\FuelStation.Blazor.Client.csproj", "{D3C4BDF5-E4FB-4AA6-8EE6-6452142040B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuelStation.Blazor.Shared", "Shared\FuelStation.Blazor.Shared.csproj", "{02E3416C-6EB2-4208-AC9F-58BEE8DC51ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FuelStation.Blazor.Shared", "Shared\FuelStation.Blazor.Shared.csproj", "{02E3416C-6EB2-4208-AC9F-58BEE8DC51ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuelStation.Model", "..\FuelStation.Model\FuelStation.Model.csproj", "{DC4FFC57-A1E2-4E76-A1A5-47E3E478A685}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FuelStation.Model", "..\FuelStation.Model\FuelStation.Model.csproj", "{DC4FFC57-A1E2-4E76-A1A5-47E3E478A685}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuelStation.EF", "..\FuelStation.EF\FuelStation.EF.csproj", "{0E123AB8-C63B-413A-803D-3A7526CC2303}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FuelStation.EF", "..\FuelStation.EF\FuelStation.EF.csproj", "{0E123AB8-C63B-413A-803D-3A7526CC2303}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FuelStation.Services", "FuelStation.Services\FuelStation.Services.csproj", "{999FD01B-8719-4D0A-AD80-B15B7906DB52}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FuelStation.Win", "FuelStation.Win\FuelStation.Win.csproj", "{D6352C18-FFB6-4A6F-948E-79503F822753}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +43,14 @@ Global
 		{0E123AB8-C63B-413A-803D-3A7526CC2303}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E123AB8-C63B-413A-803D-3A7526CC2303}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E123AB8-C63B-413A-803D-3A7526CC2303}.Release|Any CPU.Build.0 = Release|Any CPU
+		{999FD01B-8719-4D0A-AD80-B15B7906DB52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{999FD01B-8719-4D0A-AD80-B15B7906DB52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{999FD01B-8719-4D0A-AD80-B15B7906DB52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{999FD01B-8719-4D0A-AD80-B15B7906DB52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6352C18-FFB6-4A6F-948E-79503F822753}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6352C18-FFB6-4A6F-948E-79503F822753}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6352C18-FFB6-4A6F-948E-79503F822753}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6352C18-FFB6-4A6F-948E-79503F822753}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

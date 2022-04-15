@@ -1,0 +1,76 @@
+﻿@page "/customerlist/edit/{Id:guid?}"
+@using FuelStation.Blazor.Shared
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+
+<h3>Customer</h3>
+
+@if (CustomerItem == null)
+{
+    <p>Loading ...</p>
+}
+else
+{
+    <EditForm Model="@customerView" OnValidSubmit="@OnSave">
+        <table>
+            <tr>
+                <th> <label class="form-label mt-2">Name</label></th>
+                <input class="form-control mt-2" pattern="[A-Za-z]{1,50}" @bind=CustomerItem.Name title="The field is required and must contains only characters." required />
+            </tr>
+            <tr>
+                <th> <label class="form-label mt-2">Surname</label></th>
+                <input class="form-control mt-2" @bind=CustomerItem.Surname pattern="[A-Za-z]{1,50}" title="The field is required and must contains only characters." required/>
+
+            </tr>
+            <tr>
+                <th> <label class="form-label mt-2">Card Number</label></th>
+                <input class="form-control mt-2" @bind=CustomerItem.CardNumber pattern="[A]{1}[0-9]{15}" title="The field is required, start with letter A and must be 16 digit long ." required />
+
+            </tr>
+            <tr>
+                <div class="row mt-2">
+                    <div class="col">
+                        <button type="submit" class="btn btn-success" >Save</button>
+                        <button class="btn btn-danger" @onclick="OnCancel">Cancel</button>
+                    </div>
+                </div>
+            </tr>
+        </table>
+ 
+    </EditForm>
+}
+
+@code {
+    [Parameter] public Guid? Id { get; set; }
+    private CustomerViewModel customerView = new();
+    CustomerEditViewModel CustomerItem { get; set; } = new();
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        CustomerItem = await httpClient.GetFromJsonAsync<CustomerEditViewModel>($"customer/{(Id == null ? Guid.Empty : Id)}");
+ 
+    }
+
+    protected async Task OnSave()
+    {
+        HttpResponseMessage response;
+        if (Id == null || Id == Guid.Empty)
+        {
+            response = await httpClient.PostAsJsonAsync("customer", CustomerItem);
+        }
+        else
+        {
+            response = await httpClient.PutAsJsonAsync("customer", CustomerItem);
+        }
+        response.EnsureSuccessStatusCode();
+        navigationManager.NavigateTo("customerlist");
+    }
+
+    protected void OnCancel()
+    {
+        navigationManager.NavigateTo("customerlist");
+    }
+}

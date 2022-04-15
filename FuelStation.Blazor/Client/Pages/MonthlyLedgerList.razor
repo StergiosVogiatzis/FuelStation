@@ -1,0 +1,70 @@
+﻿@page "/monthlyledgerList"
+@using FuelStation.Blazor.Shared
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+
+<h3>Monthly Ledger</h3>
+<button class="btn btn-primary" @onclick="AddLedger" >Create Monthly Ledger</button>
+
+@if (isLoading)
+{
+    <p>Loading ...</p>
+}else{
+    
+     <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Year</th>
+                    <th>Month</th>
+                    <th>Income</th>
+                    <th>Expenses</th>
+                    <th>Total</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var ledger in monthlyLedgerList)
+                {
+                    <tr>
+                        <td>@ledger.Year</td>
+                        <td>@ledger.Month</td>
+                        <td>@ledger.Income</td>
+                        <td>@ledger.Expenses</td>
+                        <td>@ledger.Total</td>
+                    <td>
+                        <button class="btn btn-danger" @onclick="() => DeleteLedger(ledger)">Delete</button>
+                    </td>
+                    </tr>
+                }
+            </tbody>
+     </table>
+}
+@code{
+    
+    List<MonthlyLedgerViewModel> monthlyLedgerList = new();
+    bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadItemsFromServer();
+        isLoading = false;
+    }
+
+    private async Task LoadItemsFromServer()
+    {
+        monthlyLedgerList = await httpClient.GetFromJsonAsync<List<MonthlyLedgerViewModel>>("monthlyLedger");
+    }
+
+    async Task AddLedger()
+    {
+        navigationManager.NavigateTo("/monthlyledgerlist/Add");
+    }
+
+    async Task DeleteLedger(MonthlyLedgerViewModel ledgerToDelete)
+    {
+        var response = await httpClient.DeleteAsync($"monthlyledger/{ledgerToDelete.ID}");
+        response.EnsureSuccessStatusCode();
+        await LoadItemsFromServer();
+    }
+        
+}

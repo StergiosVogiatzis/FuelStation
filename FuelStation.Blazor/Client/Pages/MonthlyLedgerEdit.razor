@@ -1,0 +1,80 @@
+﻿@page "/monthlyledgerList/Add"
+@using FuelStation.Blazor.Shared
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+
+
+<h3>Monthly Ledger </h3>
+
+<EditForm Model="@monthlyLedgerView" OnValidSubmit="@OnSave">
+	<table>
+		<tr>
+			<th> <label class="form-label">Year</label></th>
+			<input class="form-control" type="number" min="2010" max="2030" step="1" @bind="@MonthlyLedgerItem.Year" required/>
+		</tr>
+		<tr>
+			<th> <label class="form-label">Month</label></th>
+			<select class="form-select" @bind="@MonthlyLedgerItem.Month" required>
+				<option value="January" selected>January</option>
+				<option value="February">February</option>
+				<option value="March">March</option>
+				<option value="April">April</option>
+				<option value="May">May</option>
+				<option value="June">June</option>
+				<option value="July">July</option>
+				<option value="August">August</option>
+				<option value="September">September</option>
+				<option value="October">October</option>
+				<option value="November">November</option>
+				<option value="December">December</option>
+			</select>
+
+		</tr>
+		<tr>
+			<th> <label class="form-label">Rent</label></th>
+			<input class="form-control" @bind="@MonthlyLedgerItem.RentCost" pattern="[0-9]{1,10}" title="The field is required and must contains only digits." required />
+		</tr>
+		<tr>
+			<div class="row mt-2">
+				<div class="col">
+					<button type="submit" class="btn btn-success">Save</button>
+					<button class="btn btn-danger" @onclick="OnCancel">Cancel</button>
+				</div>
+			</div>
+		</tr>
+	</table>
+
+</EditForm>
+@code {
+	[Parameter] public Guid? ID { get; set; }
+	MonthlyLedgerEditViewModel MonthlyLedgerItem { get; set; } = new();
+	private MonthlyLedgerViewModel monthlyLedgerView = new();
+
+
+	protected override async Task OnInitializedAsync()
+	{
+		MonthlyLedgerItem = await httpClient.GetFromJsonAsync<MonthlyLedgerEditViewModel>($"monthlyledger/{(ID == null ? Guid.Empty : ID)}");
+		MonthlyLedgerItem.Year = DateTime.Now.Year.ToString();
+	}
+
+    protected async Task OnSave()
+    {
+        HttpResponseMessage response;
+        if(!HasValidData())
+            return;
+        response = await httpClient.PostAsJsonAsync("monthlyledger", MonthlyLedgerItem);
+        response.EnsureSuccessStatusCode();
+        navigationManager.NavigateTo("monthlyledgerList");
+    }
+
+    protected void OnCancel()
+    {
+        navigationManager.NavigateTo("monthlyledgerList");
+    }
+
+    protected bool HasValidData()
+    {
+        return !string.IsNullOrWhiteSpace(MonthlyLedgerItem.Year) && !string.IsNullOrWhiteSpace(MonthlyLedgerItem.Month); 
+    }
+
+}
