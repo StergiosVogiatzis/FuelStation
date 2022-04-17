@@ -74,7 +74,6 @@ namespace FuelStation.Blazor.Server.Controllers
                 ID = transaction.ID,
                 Date = transaction.Date,
                 CustomerID = transaction.CustomerID,
-                Customer = transaction.Customers,
                 EmployeeID = transaction.EmployeeID,
                 TotalValue = transaction.TotalValue,
                 TransactionLines = transaction.TransactionLines.Select(transactionLine => new TransactionLine
