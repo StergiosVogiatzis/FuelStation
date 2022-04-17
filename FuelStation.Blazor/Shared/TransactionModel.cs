@@ -12,9 +12,9 @@ namespace FuelStation.Blazor.Shared
         public Guid ID { get; set; } = Guid.NewGuid();
         public DateTime Date { get; set; } = DateTime.Now;
         public Guid EmployeeID { get; set; }
-        public string EmployeeSurname { get; set; }
+        public string? EmployeeSurname { get; set; } 
         public Guid CustomerID { get; set; }
-        public string CustomerSurname { get; set; }
+        public string? CustomerSurname { get; set; } 
         public PaymentMethod PaymentMethod { get; set; }
         public decimal TotalValue { get; set; }
         public List<EmployeeViewModel> Employees { get; set; } = new();
@@ -26,9 +26,9 @@ namespace FuelStation.Blazor.Shared
         public Guid ID { get; set; } = Guid.NewGuid();
         public DateTime Date { get; set; } = DateTime.Now;
         public Guid EmployeeID { get; set; }
-        public string EmployeeSurname { get; set; }
+        public string? EmployeeSurname { get; set; }
         public Guid CustomerID { get; set; }
-        public string CustomerSurname { get; set; }
+        public string? CustomerSurname { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
         public decimal TotalValue { get; set; }
         public List<EmployeeViewModel> Employees { get; set; } = new();

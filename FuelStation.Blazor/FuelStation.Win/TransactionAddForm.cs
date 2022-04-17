@@ -45,7 +45,7 @@ namespace FuelStation.Win
             employeeView = await _client.GetFromJsonAsync<List<EmployeeEditViewModel>>($"employee");
             itemView = await _client.GetFromJsonAsync<List<ItemEditViewModel>>($"item");
             transactionView = await _client.GetFromJsonAsync<TransactionEditViewModel>($"transaction/{(_id == null ? Guid.Empty : _id)}");
-            bsTransactionLine.DataSource = transactionLineView;
+            bsTransactionLine.DataSource = _TransactionLines;
             await PopulateControls();
         }
 
@@ -55,14 +55,23 @@ namespace FuelStation.Win
             _customer = await _client.GetFromJsonAsync<CustomerEditViewModel>($"customer/{selectedCustomerID}");
             var selectedEmployeeID = ctrlEmployee.SelectedValue;
             _employee = await _client.GetFromJsonAsync<EmployeeEditViewModel>($"employee/{selectedEmployeeID}");
-            transactionView.EmployeeID = _employee.ID;
-            transactionView.EmployeeSurname = _employee.Surname;
-            transactionView.CustomerID = _customer.ID;
-            transactionView.CustomerSurname = _customer.Surname;
-            transactionView.PaymentMethod = (PaymentMethod)ctrlPaymentMethod.SelectedValue ;
-            transactionView.TotalValue = await _transactionServices.TransactionTotalValue(transactionView.TransactionLines);
+            //transactionView.EmployeeID = _employee.ID;
+            //transactionView.EmployeeSurname = _employee.Surname;
+            //transactionView.CustomerID = _customer.ID;
+            //transactionView.CustomerSurname = _customer.Surname;
+            //transactionView.PaymentMethod = (PaymentMethod)ctrlPaymentMethod.SelectedValue ;
+            var newTransaction = new TransactionEditViewModel
+            {
+                ID = transactionView.ID,
+                CustomerID = _customer.ID,
+                EmployeeID = _employee.ID,
+                EmployeeSurname = _employee.Surname,
+                CustomerSurname = _customer.Surname,
+                PaymentMethod = (PaymentMethod)ctrlPaymentMethod.SelectedValue,
+                TotalValue = await _transactionServices.TransactionTotalValue(transactionView.TransactionLines),
+        };
             HttpResponseMessage response;
-            response = await _client.PostAsJsonAsync("transaction", transactionView);
+            response = await _client.PostAsJsonAsync("transaction", newTransaction);
             response.EnsureSuccessStatusCode();
             DialogResult = DialogResult.OK;
             this.Close();
@@ -93,7 +102,7 @@ namespace FuelStation.Win
             ctrlPaymentMethod.DataSource = Enum.GetValues(typeof(PaymentMethod));
 
             ctrlItem.DataBindings.Add(new Binding("SelectedValue", bsTransactionLine, "ItemID", true));
-            ctrlQuantity.DataBindings.Add(new Binding("Value", bsTransactionLine, "Quantity", true));
+            //ctrlQuantity.DataBindings.Add(new Binding("Value", bsTransactionLine, "Quantity", true));
             
         }
 
@@ -106,7 +115,7 @@ namespace FuelStation.Win
         {
 
             await AddItems();
-            grvTransactionLines.DataSource = _TransactionLines;
+            grvTransactionLines.DataSource = bsTransactionLine;
             grvTransactionLines.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             grvTransactionLines.Columns[0].Visible = false;
             grvTransactionLines.Columns[1].Visible = false;
@@ -119,16 +128,30 @@ namespace FuelStation.Win
             var selectedItemID = ctrlItem.SelectedValue;
             _item = await _client.GetFromJsonAsync<ItemEditViewModel>($"item/{selectedItemID}");
             transactionLineView.TransactionID = transactionView.ID;
+            transactionLineView.Quantity = (int)ctrlQuantity.Value;
             transactionLineView.ItemType = _item.ItemType;
             transactionLineView.ItemPrice = _item.Price;
             transactionLineView.DiscountPercent = discountPercent;
             transactionLineView.NetValue = await _transactionServices.CalculateNetValue(ctrlQuantity.Value, _item.Price);
             transactionLineView.DiscountValue = await _transactionServices.CalculateDiscountValue(transactionLineView.NetValue, discountPercent);
             transactionLineView.TotalValue = await _transactionServices.CalculateTotalValue(transactionLineView.NetValue, transactionLineView.DiscountValue);
-            transactionView.TransactionLines.Add(transactionLineView);
+            
+            var newLine = new TransactionLineViewModel()
+            {
+                TransactionID = transactionView.ID,
+                ItemID = transactionLineView.ItemID,
+                Quantity = (int)ctrlQuantity.Value,
+                ItemType = _item.ItemType,
+                ItemPrice = _item.Price,
+                DiscountPercent = discountPercent,
+                NetValue = await _transactionServices.CalculateNetValue(ctrlQuantity.Value, _item.Price),
+                DiscountValue = await _transactionServices.CalculateDiscountValue(transactionLineView.NetValue, discountPercent),
+                TotalValue = await _transactionServices.CalculateTotalValue(transactionLineView.NetValue, transactionLineView.DiscountValue)
+            };
             //check if we should apply discount
+            transactionView.TransactionLines.Add(newLine);
             transactionLineView.TotalValue = await _transactionServices.ApplyDiscount(transactionLineView.NetValue, transactionLineView.TotalValue, transactionView.TransactionLines);
-            _TransactionLines.Add(transactionLineView);
+            _TransactionLines.Add(newLine);
             
         }
     }

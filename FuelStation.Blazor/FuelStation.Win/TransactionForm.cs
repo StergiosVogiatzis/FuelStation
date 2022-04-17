@@ -29,7 +29,7 @@ namespace FuelStation.Win
         }
         private async Task GetTransactions()
         {
-            transactionItem = await _client.GetFromJsonAsync<List<TransactionViewModel>>("transaction");
+            transactionItem = await _client.GetFromJsonAsync<List<TransactionViewModel>>($"Transaction");
             bsTransactions.DataSource = transactionItem;
             grvTransactions.DataSource = bsTransactions;
             grvTransactions.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
