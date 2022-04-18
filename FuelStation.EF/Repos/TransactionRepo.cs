@@ -33,7 +33,7 @@ namespace FuelStation.EF.Repos
 
         public async Task<List<Transaction>> GetAllAsync()
         {
-            return await _context.Transactions.AsNoTracking().ToListAsync();
+            return await _context.Transactions.AsNoTracking().Include(x => x.Employee).Include(x => x.Customer).ToListAsync();
         }
 
         public async Task<Transaction?> GetByIdAsync(Guid id)
